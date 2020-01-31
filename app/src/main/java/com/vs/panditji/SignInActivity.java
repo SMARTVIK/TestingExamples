@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.vs.panditji.model.SignInResponse;
 import com.vs.panditji.util.ApiUtil;
@@ -38,7 +39,7 @@ public class SignInActivity extends AppCompatActivity {
         });
 
         final EditText userName = findViewById(R.id.email_edit_text);
-        final EditText password = findViewById(R.id.pass_edit_text);
+        final EditText password = findViewById(R.id.password_edit_text);
 
         findViewById(R.id.view_password).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +81,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
 
-                if (response.code() == 200 && response.body().getError() == 1) {
+                if (response.code() == 200 && response.body().getError() == 0) {
                     SharedPreferences sharedPreferences = PanditJi.getInstance().getSharedPrefs();
                     sharedPreferences.edit().putString("user_id", response.body().getUser_id());
                     sharedPreferences.edit().putString("email", user);
@@ -91,11 +92,15 @@ public class SignInActivity extends AppCompatActivity {
                     ApplicationDataController.getInstance().setCurrentUserResponse(response.body());
 
                     if (openBookingScreen) {
+                        finish();
                         setResult(Activity.RESULT_OK, new Intent().putExtra("user_id", response.body().getUser_id()));
                     }else{
                         startActivity(new Intent(SignInActivity.this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
-                    finish();
+                }
+
+                if(response.code() == 200 && response.body().getError() ==1){
+                    Toast.makeText(SignInActivity.this, ""+response.body().getMsg(), Toast.LENGTH_SHORT).show();
                 }
                 hideProgressDialog();
             }

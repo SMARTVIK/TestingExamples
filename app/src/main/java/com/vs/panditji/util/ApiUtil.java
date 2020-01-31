@@ -184,10 +184,11 @@ public class ApiUtil {
 
     public void signUpApiProfile(String base64Json, String email, Callback<ProfileSignUp> profileSignUpCallback) {
         Map<String, String> params = new HashMap();
-        params.put("image", base64Json);
+        params.put("image", "data:image/png;base64,"+base64Json);
+        params.put("email", email);
         String requestString = (new JSONObject(params)).toString();
         RequestBody requestBody = RequestBody.create(MediaType.parse(Constant.MEDIA_TYPE), requestString.getBytes());
-        Call<ProfileSignUp> call = this.getApi().upload(email,requestBody);
+        Call<ProfileSignUp> call = this.getApi().upload(requestBody);
         call.enqueue(profileSignUpCallback);
 
     }

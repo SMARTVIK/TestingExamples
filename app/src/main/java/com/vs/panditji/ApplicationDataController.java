@@ -9,8 +9,10 @@ class ApplicationDataController {
     private String userId;
     private SignInResponse currentUserResponse;
 
+    private static ApplicationDataController instance = new ApplicationDataController();
+
     public static ApplicationDataController getInstance() {
-        return null;
+        return instance;
     }
 
     public void setUserLoggedIn(boolean userLoggedIn) {

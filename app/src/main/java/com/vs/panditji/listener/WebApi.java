@@ -65,11 +65,8 @@ public interface WebApi {
     @POST("profile.php")
     Call<ProfileSignUp> sendProfile(@Body RequestBody requestBody);
 
-
-    @Multipart
     @POST("profile.php")
-    Call<ProfileSignUp> upload( @Part("email") String device_type,
-                                @Part("image") RequestBody file);
+    Call<ProfileSignUp> upload(@Body RequestBody file);
 
     @POST("booking.php")
     Call<List<BookingListModel>> getBookings(RequestBody requestBody);

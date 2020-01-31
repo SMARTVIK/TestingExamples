@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -91,6 +92,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText state;
     private String base64EncodedString;
     private boolean check = true;
+    private SignUp signUp;
 
 
     private void hideProgressDialog() {
@@ -111,25 +113,59 @@ public class SignUpActivity extends AppCompatActivity {
         findViewById(R.id.sign_up_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 sendCompleteData();
-
             }
         });
 
     }
 
     private void sendProfileImageOnly() {
-        showProgressDialog();
 
-        String base64Json = Utility.encodeTobase64(imageBitmap);
-
-        ApiUtil.getInstance().signUpApiProfile(base64Json,"sdk@gmail.com", new Callback<ProfileSignUp>() {
+        ApiUtil.getInstance().signUpApiProfile(base64EncodedString,email.getText().toString().trim(), new Callback<ProfileSignUp>() {
 
             @Override
             public void onResponse(Call<ProfileSignUp> call, Response<ProfileSignUp> response) {
 
-                hideProgressDialog();
+
+                if(response.code() == 200 && response.body().getError()==0){
+
+                    final String user = email.getText().toString().trim();
+                    final String pass = password.getText().toString().trim();
+
+                    ApiUtil.getInstance().signIn(user, pass, new Callback<SignInResponse>() {
+
+                        @Override
+                        public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
+                            if(response.code() == 200 && response.body().getError() == 0){
+                                SharedPreferences sharedPreferences = PanditJi.getInstance().getSharedPrefs();
+                                sharedPreferences.edit().putString("user_id", response.body().getUser_id());
+                                sharedPreferences.edit().putString("email", user);
+                                sharedPreferences.edit().putString("password", pass);
+                                L.d("SignIn Successful " + response.body().getError()+" "+response.body().getMsg());
+                                ApplicationDataController.getInstance().setUserLoggedIn(true);
+                                ApplicationDataController.getInstance().setUserId(response.body().getUser_id());
+                                ApplicationDataController.getInstance().setCurrentUserResponse(response.body());
+                                startActivity(new Intent(SignUpActivity.this,HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|
+                                        Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                            }
+
+                            if(response.code() == 200 && response.body().getError() == 1){
+                                L.d("SignIn Unsuccessful "+response.body().getMsg());
+                                if(signUp!=null){
+                                    TextView signUpResponse = findViewById(R.id.sign_up_response);
+                                    signUpResponse.setVisibility(View.VISIBLE);
+                                    findViewById(R.id.scroll).setVisibility(View.GONE);
+                                    signUpResponse.setText(signUp.getAlert());
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SignInResponse> call, Throwable t) {
+                            hideProgressDialog();
+                        }
+                    });
+                }
 
             }
 
@@ -160,6 +196,9 @@ public class SignUpActivity extends AppCompatActivity {
             datePickerDialog.show();
             return;
         }
+
+        showProgressDialog();
+
         SignUpModel signUpModel = new SignUpModel();
         signUpModel.setName(name.getText().toString().trim());
         signUpModel.setEmail(email.getText().toString().trim());
@@ -171,22 +210,24 @@ public class SignUpActivity extends AppCompatActivity {
         signUpModel.setExpert(expert.getText().toString().trim());
         signUpModel.setAvailable_city(availableCity.getText().toString().trim());
         signUpModel.setPassword(password.getText().toString().trim());
-//        signUpModel.setImage(base64EncodedString);
+//        signUpModel.setImage("data:image/png;base64,"+base64EncodedString);
 
         signUpModel.setDOB(selectedDate);
         Gson gson = new Gson();
         String json = gson.toJson(signUpModel);
 
-        showProgressDialog();
 
         ApiUtil.getInstance().signUpApi(json, new Callback<SignUp>() {
 
             @Override
             public void onResponse(Call<SignUp> call, Response<SignUp> response) {
                 if (response.code() == 200 && response.body() != null && response.body().getError() == 0) {
-                    imageUploadToServerFunction(SignUpActivity.this, imageBitmap);
+                    signUp = response.body();
+                    sendProfileImageOnly();
                 }
                 Log.d("onResponse", response.body().getError() + "");
+
+                hideProgressDialog();
             }
 
             @Override

@@ -18,6 +18,7 @@ public class SignInResponse {
     private int token;
     private String msg;
     private int error;
+    private String alert;
 
     public String getUser_id() {
         return user_id;
@@ -65,5 +66,13 @@ public class SignInResponse {
 
     public void setError(int error) {
         this.error = error;
+    }
+
+    public String getAlert() {
+        return alert;
+    }
+
+    public void setAlert(String alert) {
+        this.alert = alert;
     }
 }
