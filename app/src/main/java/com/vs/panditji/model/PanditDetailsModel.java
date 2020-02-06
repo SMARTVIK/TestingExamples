@@ -4,31 +4,31 @@ public class PanditDetailsModel {
 
 
     /**
-     * id : 3
-     * name : Anup Tiwari
-     * education : BA,MA
-     * avalble_in : Bhopal
-     * verify : 0
-     * join : 01/11/2019
-     * star : 4.2
-     * img : sdk2.jpg
+     * reg_id : 10
+     * name : Vivek Pratap Singh
+     * education : B.A.
+     * avalble_in : Delhi
+     * verify : 1
+     * join : 30/01/2020
+     * star :
+     * id : sdk1.jpg
      */
 
-    private String id;
+    private String reg_id;
     private String name;
     private String education;
     private String avalble_in;
     private String verify;
     private String join;
     private String star;
-    private String img;
+    private String id;
 
-    public String getId() {
-        return id;
+    public String getReg_id() {
+        return reg_id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setReg_id(String reg_id) {
+        this.reg_id = reg_id;
     }
 
     public String getName() {
@@ -79,11 +79,11 @@ public class PanditDetailsModel {
         this.star = star;
     }
 
-    public String getImg() {
-        return img;
+    public String getId() {
+        return id;
     }
 
-    public void setImg(String img) {
-        this.img = img;
+    public void setId(String id) {
+        this.id = id;
     }
 }

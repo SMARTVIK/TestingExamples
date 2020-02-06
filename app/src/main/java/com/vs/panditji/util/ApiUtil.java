@@ -147,7 +147,7 @@ public class ApiUtil {
 
     public void getPanditDetails(String id, Callback<PanditDetailsModel> panditDetailsModelCallback) {
         Map<String, String> params = new HashMap();
-        params.put("id", id);
+        params.put("user_id", id);
         String requestString = (new JSONObject(params)).toString();
         RequestBody requestBody = RequestBody.create(MediaType.parse(Constant.MEDIA_TYPE), requestString.getBytes());
         Call<PanditDetailsModel> call = this.getApi().getPanditDetails(requestBody);

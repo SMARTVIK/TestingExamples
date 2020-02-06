@@ -25,10 +25,10 @@ public class SplashActivity extends AppCompatActivity {
 
                 if(ApplicationDataController.getInstance().getUserId()==null){
                     finish();
-                    startActivity(new Intent(SplashActivity.this,HomeActivity.class));
+                    startActivity(new Intent(SplashActivity.this,SignInActivity.class));
                 }else{
                     finish();
-                    startActivity(new Intent(SplashActivity.this,SignInActivity.class));
+                    startActivity(new Intent(SplashActivity.this,HomeActivity.class));
                 }
 
             }

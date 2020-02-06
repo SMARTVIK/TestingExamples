@@ -56,7 +56,7 @@ public interface WebApi {
     @POST("pooja_details")
     Call<List<PujaDetailModel>> getPujaDetails(@Body RequestBody requestBody);
 
-    @POST("pandit_profile")
+    @POST("pandit_details.php")
     Call<PanditDetailsModel> getPanditDetails(@Body RequestBody requestBody);
 
     @POST("check_availability")
@@ -69,5 +69,5 @@ public interface WebApi {
     Call<ProfileSignUp> upload(@Body RequestBody file);
 
     @POST("booking.php")
-    Call<List<BookingListModel>> getBookings(RequestBody requestBody);
+    Call<List<BookingListModel>> getBookings(@Body RequestBody requestBody);
 }
