@@ -83,9 +83,10 @@ public class SignInActivity extends AppCompatActivity {
 
                 if (response.code() == 200 && response.body().getError() == 0) {
                     SharedPreferences sharedPreferences = PanditJi.getInstance().getSharedPrefs();
-                    sharedPreferences.edit().putString("user_id", response.body().getUser_id());
-                    sharedPreferences.edit().putString("email", user);
-                    sharedPreferences.edit().putString("password", pass);
+                    sharedPreferences.edit().putString(Constants.USER_ID, response.body().getUser_id());
+                    sharedPreferences.edit().putString(Constants.EMAIL, user);
+                    sharedPreferences.edit().putString(Constants.PASSWORD, pass);
+                    sharedPreferences.edit().putString(Constants.NAME, response.body().getName());
                     L.d("SignIn Successful " + response.body().getError()+" "+response.body().getMsg());
                     ApplicationDataController.getInstance().setUserLoggedIn(true);
                     ApplicationDataController.getInstance().setUserId(response.body().getUser_id());
@@ -93,9 +94,10 @@ public class SignInActivity extends AppCompatActivity {
 
                     if (openBookingScreen) {
                         finish();
-                        setResult(Activity.RESULT_OK, new Intent().putExtra("user_id", response.body().getUser_id()));
+                        setResult(Activity.RESULT_OK, new Intent().putExtra(Constants.USER_ID, response.body().getUser_id()));
                     }else{
-                        startActivity(new Intent(SignInActivity.this, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK));
+                        finish();
+                        startActivity(new Intent(SignInActivity.this, MainScreen.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
                 }
 

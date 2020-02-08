@@ -4,7 +4,7 @@ import android.content.SharedPreferences;
 
 import com.vs.panditji.model.SignInResponse;
 
-class ApplicationDataController {
+public class ApplicationDataController {
     private boolean userLoggedIn;
     private String userId;
     private SignInResponse currentUserResponse;
@@ -38,5 +38,17 @@ class ApplicationDataController {
 
     public SignInResponse getCurrentUserResponse() {
         return currentUserResponse;
+    }
+
+    public String getUserName() {
+        return PanditJi.getInstance().getSharedPrefs().getString(Constants.NAME,null);
+    }
+
+    public String getUserEmail() {
+        return PanditJi.getInstance().getSharedPrefs().getString(Constants.EMAIL,null);
+    }
+
+    public void logout() {
+        PanditJi.getInstance().getSharedPrefs().edit().clear()  .commit();
     }
 }
